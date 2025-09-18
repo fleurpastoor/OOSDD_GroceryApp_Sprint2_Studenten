@@ -4,14 +4,17 @@ on:
   push:
     branches:
       - main
+      - feature/uc5
       - infra/runner-toevoegen
   pull_request:
     branches:
       - main
+      - release
+      - develop
  
 jobs:
   test:
-    runs-on: ubuntu-latest  # Of windows-latest/macOS-latest als specifiek platform nodig is
+    runs-on: macOS-latest  # Of windows-latest/ubuntu-latest als specifiek platform nodig is
     steps:
       - name: Haal de repository op
         uses: actions/checkout@v4
@@ -22,13 +25,13 @@ jobs:
           dotnet-version: '8.0.x'  # Gebruik de juiste versie voor MAUI
  
       - name: Installeer MAUI workloads
-        run: dotnet workload install maui-android
+        run: dotnet workload install maui
  
       - name: Herstel afhankelijkheden
         run: dotnet restore
  
       - name: Bouw de applicatie
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build -f net8.0-android --configuration Release --no-restore
  
       - name: Voer unit tests uit
-        run: dotnet test --configuration Release --no-restore --no-build --verbosity normal
+        run: dotnet test -f net8.0-android --configuration Release --no-restore --no-build --verbosity normal
